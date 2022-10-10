@@ -1,7 +1,5 @@
 import hbs from "express-handlebars";
 import express from "express";
-import * as dotenv from "dotenv"; // consulte https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
-dotenv.config(); 
 
 const PORT = 4000;
 const app = express();
