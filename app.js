@@ -1,12 +1,13 @@
 import hbs from "express-handlebars";
 import express from "express";
-import * as dotenv from "dotenv"; // consulte https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
-dotenv.config(); 
 
 const PORT = 4000;
 const app = express();
 
 import routerForm from "./routes/form.js";
+
+//acceso a variables locales para que se vean en todas las sistas de la 
+app.locals.sendMailFeedback 
 
 //express-hbs config
 app.engine(".hbs", hbs.engine({ extname: "hbs" }));

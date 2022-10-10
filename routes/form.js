@@ -1,41 +1,34 @@
 import express from "express"
 const router = express.Router()
+import validationRules from "./validators/validationsrules.js";
+import transport from "../config/nodemailer.js"
 
-import nodemailer from "nodemailer";
-
+//importamos dos  (bady y validationResult) de express-validator
+import validator from "express-validator";
+const { validationResult } = validator;
 
 // ruta raiz manejado por router formulario
 router.get("/", (req, res) => {
   res.render("form");
 });
-router.post("/", async (req, res) => {
-    const { name, lastName, email, message } = req.body;
-    const emailMsg = {
-        to: "atencioncliente@nuestraempresa.com",
-        from: email,
-        subject: "Mensaje desde formulario",
-        html: `Contacto de  ${name} ${lastName} : ${message}`
-    }
-    //codigo inseguro con variables de entorno
-    const transport = nodemailer.createTransport({
-        host: "smtp.mailtrap.io",
-        port: 2525,
-        auth: {
-            user: process.env.user,
-            pass: process.env.pass
-        }
-    });
-    //no es verdad que el mensaje es checado hay que recibir una respuesta del servidor
-    const sendMailStatus = await transport.sendMail(emailMsg)
-    let sendMailfeddback = "";
-    //rejected.length busca que la respuesta tenga un array vacio, si tiene lengthg es por que hay error  entonces No se entrego el mensaje
-    if (sendMailStatus.rejected.length) {
-        sendMailfeddback = "No se envio el Mensaje";
-    } else {
-        sendMailfeddback = "Mensaje enviado";
-    }
-    res.render("home", {message: sendMailfeddback})
-    })
-    
-
+router.post("/", validationRules ,async (req, res) => {
+    //Aqui se atraparan los popsibles errores del formulario validado
+ 
+            const { name, lastName, email, message } = req.body;
+            const emailMsg = {
+                to: "atencioncliente@nuestraempresa.com",
+                from: email,
+                subject: "Mensaje desde formulario",
+                html: `Contacto de  ${name} ${lastName} : ${message}`
+            }
+            const sendMailStatus = await transport.sendMail(emailMsg)
+        
+            if (sendMailStatus.rejected.length) {
+                req.app.locals.sendMailFeedback = "No se envio el Mensaje";
+            } else {
+                req.app.locals.sendMailFeedback = "Mensaje enviado";
+            }
+            res.redirect("/")
+            }
+    )
 export default router
