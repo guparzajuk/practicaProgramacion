@@ -6,6 +6,9 @@ const app = express();
 
 import routerForm from "./routes/form.js";
 
+//acceso a variables locales para que se vean en todas las sistas de la 
+app.locals.sendMailFeedback 
+
 //express-hbs config
 app.engine(".hbs", hbs.engine({ extname: "hbs" }));
 app.set("view engine", "hbs");
